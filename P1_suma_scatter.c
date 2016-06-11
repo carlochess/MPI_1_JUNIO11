@@ -7,9 +7,9 @@
 
 int main(int argc, char** argv) {
         double totalT; 
-        int rank, size, i,stride, source,tag=1,total=0;
+        int rank, size, i,stride, source,tag=1;
         float a[MAX];
-        float acum = 0;
+        float acum = 0,total=0;
         MPI_Status stat;
 
         for (i = 1; i <= 100; i++)
@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
         MPI_Init(&argc,&argv);
         MPI_Comm_size(MPI_COMM_WORLD, &size);
         MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-        stride = MAX/(size)+1;
+        stride = MAX/(size);
         int disp[stride],scounts[stride];
         float b[stride];
 
@@ -38,8 +38,8 @@ int main(int argc, char** argv) {
         printf("Subtotal %lf en nodo %d tiempo %g\n", acum, rank,TotalTime);
 
         MPI_Reduce(&TotalTime,&totalT,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
-        MPI_Reduce(&acum,&total,1,MPI_INT,MPI_SUM,0,MPI_COMM_WORLD);
+        MPI_Reduce(&acum,&total,1,MPI_FLOAT,MPI_SUM,0,MPI_COMM_WORLD);
         if (rank == 0)
-                printf("Total: %d Tiempo: %g \n", total,totalT);
+                printf("Total: %lf Tiempo: %g \n", total,totalT);
         MPI_Finalize();
 }
